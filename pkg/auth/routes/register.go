@@ -20,6 +20,7 @@ func Register(r *http.Request, c pb.AuthServiceClient) (int64, error) {
 	if err != nil {
 		return http.StatusBadRequest, err
 	}
+	defer r.Body.Close()
 
 	registerResponse, err := c.Register(context.Background(), &pb.RegisterRequest{
 		Email:    body.Email,

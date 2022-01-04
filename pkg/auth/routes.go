@@ -2,6 +2,7 @@ package auth
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/arturzhamaliyev/Online-shop-API-Gateway/pkg/auth/routes"
 	"github.com/arturzhamaliyev/Online-shop-API-Gateway/pkg/config"
@@ -23,6 +24,11 @@ func RegisterRoutes(r chi.Router, c *config.Config) *ServiceClient {
 func (svc *ServiceClient) Register(w http.ResponseWriter, r *http.Request) {
 	// TODO: check for content-type JSON
 
-	routes.Register(r, svc.Client)
-	defer r.Body.Close()
+	status, err := routes.Register(r, svc.Client)
+	if err != nil {
+		http.Error(w, strconv.Itoa(int(status)), int(status))
+		return
+	}
+
+	w.WriteHeader(int(status))
 }
