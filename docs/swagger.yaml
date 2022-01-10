@@ -1,0 +1,70 @@
+basePath: /
+definitions:
+  auth.PostBody:
+    properties:
+      id:
+        type: integer
+    type: object
+  routes.RegisterRequestBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  utils.HTTPError:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: artur.zhamaliev@gmail.com
+    name: arturzhamaliyev
+  description: API Gateway for online-shop services
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: online-shop API
+  version: 0.0.1
+paths:
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: register user
+      parameters:
+      - description: registering new user with sent credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/routes.RegisterRequestBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/auth.PostBody'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Create user
+      tags:
+      - auth
+swagger: "2.0"

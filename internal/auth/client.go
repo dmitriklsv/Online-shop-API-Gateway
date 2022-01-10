@@ -3,8 +3,8 @@ package auth
 import (
 	"fmt"
 
-	"github.com/arturzhamaliyev/Online-shop-API-Gateway/pkg/auth/pb"
-	"github.com/arturzhamaliyev/Online-shop-API-Gateway/pkg/config"
+	"github.com/arturzhamaliyev/Online-shop-API-Gateway/internal/auth/pb"
+	"github.com/arturzhamaliyev/Online-shop-API-Gateway/internal/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

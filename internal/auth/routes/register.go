@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/arturzhamaliyev/Online-shop-API-Gateway/pkg/auth/pb"
+	"github.com/arturzhamaliyev/Online-shop-API-Gateway/internal/auth/pb"
 )
 
 type RegisterRequestBody struct {
@@ -13,12 +13,12 @@ type RegisterRequestBody struct {
 	Password string `json:"password"`
 }
 
-func Register(r *http.Request, c pb.AuthServiceClient) (int64, error) {
+func Register(r *http.Request, c pb.AuthServiceClient) (int64, int64, error) {
 	var body RegisterRequestBody
 
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		return http.StatusBadRequest, err
+		return 0, http.StatusBadRequest, err
 	}
 	defer r.Body.Close()
 
@@ -27,8 +27,8 @@ func Register(r *http.Request, c pb.AuthServiceClient) (int64, error) {
 		Password: body.Password,
 	})
 	if err != nil {
-		return http.StatusBadGateway, err
+		return 0, http.StatusBadGateway, err
 	}
 
-	return registerResponse.GetStatus(), nil
+	return registerResponse.GetId(), registerResponse.GetStatus(), nil
 }
