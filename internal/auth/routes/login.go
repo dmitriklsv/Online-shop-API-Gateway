@@ -8,27 +8,27 @@ import (
 	"github.com/arturzhamaliyev/Online-shop-API-Gateway/internal/auth/pb"
 )
 
-type RegisterRequestBody struct {
+type LoginRequestBody struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func Register(r *http.Request, c pb.AuthServiceClient) (int64, int64, error) {
-	var body RegisterRequestBody
+func Login(r *http.Request, c pb.AuthServiceClient) (int64, string, error) {
+	var body LoginRequestBody
 
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		return 0, http.StatusBadRequest, err
+		return http.StatusBadRequest, "", err
 	}
 	defer r.Body.Close()
 
-	registerResponse, err := c.Register(context.Background(), &pb.RegisterRequest{
+	loginResponse, err := c.Login(context.Background(), &pb.LoginRequest{
 		Email:    body.Email,
 		Password: body.Password,
 	})
 	if err != nil {
-		return 0, http.StatusBadGateway, err
+		return http.StatusBadGateway, "", err
 	}
 
-	return registerResponse.Id, registerResponse.Status, nil
+	return loginResponse.Status, loginResponse.Token, nil
 }

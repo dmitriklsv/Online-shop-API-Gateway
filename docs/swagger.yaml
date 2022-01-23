@@ -5,6 +5,13 @@ definitions:
       id:
         type: integer
     type: object
+  routes.LoginRequestBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   routes.RegisterRequestBody:
     properties:
       email:
@@ -29,6 +36,36 @@ info:
   title: online-shop API
   version: 0.0.1
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: login user
+      parameters:
+      - description: validate user/login
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/routes.LoginRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.PostBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Login user
+      tags:
+      - auth
   /auth/register:
     post:
       consumes:

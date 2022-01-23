@@ -10,7 +10,7 @@ import (
 )
 
 type PostBody struct {
-	Id int64
+	Id int64 `json:"id,omitempty"`
 }
 
 func RegisterRoutes(r chi.Router, c *config.Config) *ServiceClient {
@@ -18,8 +18,9 @@ func RegisterRoutes(r chi.Router, c *config.Config) *ServiceClient {
 		Client: InitServiceClient(c),
 	}
 
-	r.Route("/auth", func(r chi.Router) {
-		r.Post("/register", svc.Register)
+	r.Route("/auth", func(auth chi.Router) {
+		auth.Post("/register", svc.Register)
+		auth.Post("/login", svc.Login)
 	})
 
 	return svc
@@ -31,7 +32,7 @@ func RegisterRoutes(r chi.Router, c *config.Config) *ServiceClient {
 // @Accept			json
 // @Produce		json
 // @Param			input			body		routes.RegisterRequestBody	true	"registering new user with sent credentials"
-// @Success		201				{object}		PostBody
+// @Success		201				{object}	PostBody
 // @Failure		400				{object}	utils.HTTPError
 // @Failure		404				{object}	utils.HTTPError
 // @Failure		409				{object}	utils.HTTPError
@@ -45,6 +46,24 @@ func (svc *ServiceClient) Register(w http.ResponseWriter, r *http.Request) {
 		utils.SendJson(w, status, utils.HTTPError{Message: err.Error()})
 		return
 	}
-
 	utils.SendJson(w, status, &PostBody{id})
+}
+
+// @Summary		Login user
+// @Description	login user
+// @Tags			auth
+// @Accept			json
+// @Produce		json
+// @Param			input		body		routes.LoginRequestBody	true	"validate user/login"
+// @Success		200			{object}	PostBody
+// @Failure		401			{object}	utils.HTTPError
+// @Failure		500			{object}	utils.HTTPError
+// @Router			/auth/login	[post]
+func (svc *ServiceClient) Login(w http.ResponseWriter, r *http.Request) {
+	status, token, err := routes.Login(r, svc.Client)
+	if err != nil {
+		utils.SendJson(w, status, utils.HTTPError{Message: err.Error()})
+		return
+	}
+	utils.SendJson(w, status, token)
 }
