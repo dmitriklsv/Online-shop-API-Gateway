@@ -8,6 +8,7 @@ import (
 	_ "github.com/arturzhamaliyev/Online-shop-API-Gateway/docs"
 	"github.com/arturzhamaliyev/Online-shop-API-Gateway/internal/auth"
 	"github.com/arturzhamaliyev/Online-shop-API-Gateway/internal/config"
+	"github.com/arturzhamaliyev/Online-shop-API-Gateway/pkg/utils"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -25,7 +26,17 @@ func Run(c *config.Config) http.Handler {
 		httpSwagger.URL(fmt.Sprintf("http://localhost%s/swagger/doc.json", c.Port)),
 	))
 
-	auth.RegisterRoutes(r, c)
+	authSvc := auth.RegisterRoutes(r, c)
+
+	r.Route("/order", func(order chi.Router) {
+		authMiddleware := auth.InitAuthMiddleware(authSvc)
+
+		order.Use(authMiddleware.AuthRequired)
+
+		order.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			utils.SendJson(w, 200, "hi")
+		})
+	})
 
 	return r
 }
