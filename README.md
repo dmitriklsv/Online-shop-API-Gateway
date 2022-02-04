@@ -1,6 +1,6 @@
-#API hub for microservices
-Here im learning gRPC by building API gateway
-Some goals:
-  auth service written on golang
-  order service written on typescript/nodejs+express
+# API hub for microservices
+Here im learning gRPC by building API gateway <br />
+  Some goals: <br />
+  auth service written on golang <br />
+  order service written on typescript/nodejs+express <br />
   ...
